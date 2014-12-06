@@ -46,11 +46,12 @@ endif
 #__SOFTFP__
 
 
-BINPATH=~/sat/bin
+BINPATH=/usr/bin
 CC=$(BINPATH)/arm-none-eabi-gcc
 OBJCOPY=$(BINPATH)/arm-none-eabi-objcopy
 SIZE=$(BINPATH)/arm-none-eabi-size
-FLASHPROG=$(BINPATH)/st-flash
+FLASHPROG=openocd
+OPENOCDCNF=/usr/share/openocd/scripts/board/stm32f4discovery.cfg
 
 CFLAGS  = -std=gnu99 -g -O2 -Wall -Tstm32_flash.ld
 CFLAGS += -mlittle-endian -mthumb -mthumb-interwork -nostartfiles -mcpu=cortex-m4
@@ -125,5 +126,5 @@ clean:
 	$(MAKE) clean -C lib # Remove this line if you don't want to clean the libs as well
 	
 flash: proj
-	$(FLASHPROG) write $(OUTPATH)/$(PROJ_NAME).bin 0x8000000
+	$(FLASHPROG) -f $(OPENOCDCNF) -c "program $(OUTPATH)/$(PROJ_NAME).elf verify reset"
 

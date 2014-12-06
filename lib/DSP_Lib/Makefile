@@ -1,4 +1,4 @@
-BINPATH=~/sat/bin
+BINPATH=/usr/bin
 
 CC=$(BINPATH)/arm-none-eabi-gcc
 AR=$(BINPATH)/arm-none-eabi-ar
