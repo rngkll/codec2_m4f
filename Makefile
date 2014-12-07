@@ -113,7 +113,7 @@ lib:
 proj: 	$(OUTPATH)/$(PROJ_NAME).elf
 
 $(OUTPATH)/$(PROJ_NAME).elf: $(SRCS)
-	mkdir $(OUTPATH)
+	mkdir -p $(OUTPATH)
 	$(CC) $(CFLAGS) $^ -o $@ $(LIBPATHS) $(LIBS)
 	$(OBJCOPY) -O ihex $(OUTPATH)/$(PROJ_NAME).elf $(OUTPATH)/$(PROJ_NAME).hex
 	$(OBJCOPY) -O binary $(OUTPATH)/$(PROJ_NAME).elf $(OUTPATH)/$(PROJ_NAME).bin
@@ -124,6 +124,7 @@ clean:
 	rm -f $(OUTPATH)/$(PROJ_NAME).hex
 	rm -f $(OUTPATH)/$(PROJ_NAME).bin
 	$(MAKE) clean -C lib # Remove this line if you don't want to clean the libs as well
+	#rm -rf $(OUTPATH)
 	
 flash: proj
 	$(FLASHPROG) -f $(OPENOCDCNF) -c "program $(OUTPATH)/$(PROJ_NAME).elf verify reset"
