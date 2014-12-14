@@ -8,7 +8,24 @@ To build this project, you need this list of tools:
 ------------
 
 * [GNU toolchain from ARM Cortex-R & Cortex-M:](https://launchpad.net/gcc-arm-embedded) -- compilator and toolchains
-* [ST-LINK utils](http://github.com/texane/stlink) -- Debugger & programmer software.
+* [OpenOCD](http://openocd.sourceforge.net/) -- Debugger & programmer software.
+
+To build the firmware run 'make'
+To load a firmware run 'make flash'
+
+How to load and debug
+------------
+To debug this program run openocd with the configuration file from the board
+
+openocd -f /usr/share/openocd/scripts/board/stm32f4discovery.cfg
+
+Then you can connect over telnet to the Open On-Chip debugger to the port 4444
+
+telnet localhost 4444
+
+To connect gdb to load newly build firmware and debug connect to port 3333 on localhost with gdb.
+
+arm-none-eabi-gdb -ex "target remote localhost:3333" build/codec2_m4f.elf
 
 Some info about implementation:
 ------------
