@@ -81,12 +81,9 @@ uint32_t MicListenerInit(uint32_t AudioFreq, uint32_t BitRes, uint32_t ChnlNbr)
   }
   else
   {
-//    /* Enable CRC module */
-//    RCC->AHB1ENR |= RCC_AHB1ENR_CRCEN;
 
 #ifdef USE_ST_FILTER
     /* Filter LP & HP Init */
-    //Filter.LP_HZ = 8000;
     Filter.LP_HZ = 4000;
     Filter.HP_HZ = 250;
     Filter.Fs = 16000;
@@ -275,7 +272,8 @@ static void MicListener_SPI_Init(uint32_t Freq)
 
   /* SPI configuration */
   SPI_I2S_DeInit(SPI2);
-  I2S_InitStructure.I2S_AudioFreq = I2S_AudioFreq_32k;
+  //I2S_InitStructure.I2S_AudioFreq = I2S_AudioFreq_32k;
+  I2S_InitStructure.I2S_AudioFreq = Freq;
   I2S_InitStructure.I2S_Standard = I2S_Standard_LSB;
   I2S_InitStructure.I2S_DataFormat = I2S_DataFormat_16b;
   I2S_InitStructure.I2S_CPOL = I2S_CPOL_High;
