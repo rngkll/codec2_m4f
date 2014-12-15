@@ -174,9 +174,8 @@ int main(void)
 {
 	/* Initialize LEDS */
 	/* Red Led On: buffer overflow */
-	STM_EVAL_LEDInit(LED3);
-	/* Green Led On: fdmdv+codec2 enabled */
-	STM_EVAL_LEDInit(LED4);
+	STM_EVAL_LEDInit(LED3); 
+	STM_EVAL_LEDInit(LED4); //green led
 	STM_EVAL_LEDInit(LED5);
 	/* Blue Led On: start of application */
 	STM_EVAL_LEDInit(LED6);
@@ -184,9 +183,9 @@ int main(void)
 	STM_EVAL_LEDOn(LED6);
 
 	if(Transparent_mode)
-	STM_EVAL_LEDOff(LED4);
+	STM_EVAL_LEDOff(LED3);
 	else
-	STM_EVAL_LEDOn(LED4);
+	STM_EVAL_LEDOn(LED3);
 
 	/* SysTick end of count event each 10ms */
 	RCC_GetClocksFreq(&RCC_Clocks);
@@ -200,11 +199,6 @@ int main(void)
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 	STM_EVAL_USART2Init(&USART_InitStructure);
-
-	// turn off buffers, so IO occurs immediately
-	setvbuf(stdin, NULL, _IONBF, 0);
-	setvbuf(stdout, NULL, _IONBF, 0);
-	setvbuf(stderr, NULL, _IONBF, 0);
 
 	//unsigned int idx = 0;
 	Time_Rec_Base=0;
@@ -230,9 +224,8 @@ int main(void)
 	Audio_MAL_Play((uint32_t) padBuffer, (320*(SPEAKER_FREQ/MIC_FREQ))*2*sizeof(short));
 	EVAL_AUDIO_PauseResume(AUDIO_RESUME);
 
-	/* Start the record */
-	MicListenerInit(32000,16, 1);
-	MicListenerStart(RecBuf_8Khz, PCM_OUT_SIZE);
+	/* Init Microphone */
+	MicListenerInit(I2S_AudioFreq_32k,16, 1);
 
 	/* GLOBAL SCHEDULER
 	* DO NOT USE LOOPS INSIDE IT!
@@ -243,6 +236,8 @@ int main(void)
 		Delay(500);
 
 		uint32_t cont = 0;	
+		/* Start microphone */
+		MicListenerStart(RecBuf_8Khz, PCM_OUT_SIZE);
 		/* ~25 samples per second */ 
 		while(cont<125) {
 			/* we have frame from mike */
@@ -285,7 +280,12 @@ int main(void)
 
 			Data_Status = 0;
 			++cont;
+			STM_EVAL_LEDToggle(LED4); // toggle green led
 		}
+		/* Stop microphone */
+		MicListenerStop();
+		/* Turn off led 4 */
+		STM_EVAL_LEDOff(LED4); //green led off
 	}
 
 	EVAL_AUDIO_Mute(AUDIO_MUTE_ON);
